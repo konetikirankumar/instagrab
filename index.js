@@ -1,6 +1,6 @@
 const express = require('express');
 const cheerio = require('cheerio');
-let got;
+
 
 const app = express();
 app.use(express.static('public')); // serve index.html
@@ -77,10 +77,11 @@ function decodeSnapApp(args) {
       return getDecodedSnapSave(decodeSnapApp(getEncodedSnapApp(data)));
     }
 
-    if (!got) {
-      got = (await import('got')).default;
-    }
+    let got;
 
+if (!got) {
+  got = (await import('got')).default;
+}
     const response = await got('https://snapsave.app/action.php?lang=id', {
       method: 'POST',
       headers: {
