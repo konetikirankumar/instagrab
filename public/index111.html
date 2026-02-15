@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Instagram Video Downloader (Backend)</title>
+  <style>
+    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f6f8fa; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+    .container { background: #fff; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); padding: 40px 32px; max-width: 400px; width: 100%; text-align: center; }
+    h1 { color: #2c3e50; font-size: 2rem; font-weight: 700; margin-bottom: 18px; }
+    .subtitle { color: #7f8c8d; font-size: 1rem; margin-bottom: 28px; }
+    input[type="text"] { width: 100%; padding: 12px 16px; border: 2px solid #e0e0ff; border-radius: 8px; font-size: 1rem; outline: none; margin-bottom: 18px; }
+    .download-btn { display: inline-block; padding: 14px 28px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; border-radius: 10px; font-size: 1.05rem; font-weight: 600; text-decoration: none; border: none; cursor: pointer; margin-bottom: 18px; }
+    .result { margin-top: 24px; }
+    .error { color: #c00; margin-top: 18px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Instagram Video Downloader</h1>
+    <p class="subtitle">Paste Instagram URL to download videos</p>
+
+    urlInput
+    <input type="text" id="instagramUrl" placeholder="Paste Instagram post or video URL here...">
+    <button onclick="downloadInstagram()" class="download-btn">Get Download Link</button>
+    <div id="result" class="result"></div>
+    <div id="error" class="error"></div>
+  </div>
+  <script>
+    async function downloadInstagram() {
+      document.getElementById('result').innerHTML = '';
+      document.getElementById('error').innerText = '';
+      const url = document.getElementById('instagramUrl').value.trim();
+      if (!url) {
+        document.getElementById('error').innerText = 'Please paste an Instagram URL';
+        return;
+      }
+      if (!url.includes('instagram.com')) {
+        document.getElementById('error').innerText = 'Please enter a valid Instagram URL';
+        return;
+      }
+      try {
+        const response = await fetch('/api/download?url=' + encodeURIComponent(url));
+        const data = await response.json();
+        if (data.status && data.data && data.data.length > 0) {
+          let links = data.data.map(item => `<div><a href="${item.url}" class="download-btn" download>Download (${item.resolution || 'Video'})</a></div>`).join('');
+          document.getElementById('result').innerHTML = links;
+        } else {
+          document.getElementById('error').innerText = data.msg || 'No downloadable video found.';
+        }
+      } catch (e) {
+        document.getElementById('error').innerText = 'Server error: ' + e.message;
+      }
+    }
+    document.getElementById('instagramUrl').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') downloadInstagram();
+    });
+  </script>
+</body>
+</html>
