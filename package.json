@@ -1,9 +1,10 @@
 {
   "name": "instagrab",
   "version": "1.0.0",
-  "main": "Node.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node Node.js"
+    "build": "echo Build completed",
+    "start": "node index.js"
   },
   "dependencies": {
     "cheerio": "^1.0.0",
