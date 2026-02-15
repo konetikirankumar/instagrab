@@ -127,8 +127,15 @@ function decodeSnapApp(args) {
     if (!results.length) return { developer: '@Alia Uhuy', status: false, msg: 'Blank data' };
     return { developer: '@Alia Uhuy', status: true, data: results };
   } catch (e) {
-    return { developer: '@Alia Uhuy', status: false, msg: e.message };
-  }
+  console.error(e); // log full error in console
+  return { 
+    developer: '@Alia Uhuy', 
+    status: false, 
+    msg: e.message,
+    stack: e.stack
+  };
+}
+
 }
 
 // API route
