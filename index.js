@@ -36,7 +36,12 @@ const cheerio = require('cheerio');
 
 
 const app = express();
+
 app.use(express.static('public')); // serve index.html
+app.use((req, res, next) => {
+  logger.info(`${req.method} ${req.url} - IP: ${req.ip}`);
+  next();
+});
 
 // snapsave function
 async function snapsave(url) {
@@ -161,7 +166,10 @@ if (!got) {
     if (!results.length) return { developer: '@Alia Uhuy', status: false, msg: 'Blank data' };
     return { developer: '@Alia Uhuy', status: true, data: results };
   } catch (e) {
-  console.error(e); // log full error in console
+  //console.error(e); // log full error in console
+
+    logger.error(e.message, { stack: e.stack });
+
   return { 
     developer: '@Alia Uhuy', 
     status: false, 
@@ -175,7 +183,9 @@ if (!got) {
 // API route
 app.get('/api/download', async (req, res) => {
   const url = req.query.url;
-  console.log('Received request for URL:', url);
+//  console.log('Received request for URL:', url);
+  logger.info(`Received request for URL: ${url}`);
+
   const result = await snapsave(url);
   res.json(result);
 });
@@ -184,4 +194,5 @@ app.get('/api/download', async (req, res) => {
 //app.listen(3000, () => console.log('Server running on port 3000'));
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
 
