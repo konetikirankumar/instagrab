@@ -2,6 +2,7 @@ const winston = require('winston');
 const fs = require('fs');
 const path = require('path');
 
+// Use safe writable directory
 let logDir = path.join(process.cwd(), 'logs');
 
 try {
@@ -9,16 +10,15 @@ try {
     fs.mkdirSync(logDir, { recursive: true });
   }
 } catch (err) {
-  logDir = path.join('/tmp', 'logs');
-  if (!fs.existsSync(logDir)) {
-    fs.mkdirSync(logDir, { recursive: true });
-  }
+  logDir = '/tmp';
 }
 
 const logger = winston.createLogger({
   level: 'info',
   format: winston.format.combine(
-    winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+    winston.format.timestamp({
+      format: 'YYYY-MM-DD HH:mm:ss'
+    }),
     winston.format.printf(({ timestamp, level, message }) => {
       return `${timestamp} [${level.toUpperCase()}] ${message}`;
     })
@@ -32,3 +32,4 @@ const logger = winston.createLogger({
 });
 
 module.exports = logger;
+
