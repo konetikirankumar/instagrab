@@ -1,4 +1,4 @@
-const logger = require('./log');
+//const logger = require('./log');
 const express = require('express');
 const cheerio = require('cheerio');
 let got;
@@ -144,5 +144,6 @@ app.get('/api/download', async (req, res) => {
 //app.listen(3000, () => console.log('Server running on port 3000'));
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
 
 
