@@ -1,3 +1,36 @@
+
+const winston = require('winston');
+const fs = require('fs');
+const path = require('path');
+
+// Create logs folder if not exists
+const logDir = path.join(__dirname, 'logs');
+if (!fs.existsSync(logDir)) {
+  fs.mkdirSync(logDir);
+}
+
+// Logger configuration
+const logger = winston.createLogger({
+  level: 'info',
+  format: winston.format.combine(
+    winston.format.timestamp({
+      format: 'YYYY-MM-DD HH:mm:ss'
+    }),
+    winston.format.printf(({ timestamp, level, message, stack }) => {
+      return stack
+        ? `${timestamp} [${level.toUpperCase()}] ${message} - ${stack}`
+        : `${timestamp} [${level.toUpperCase()}] ${message}`;
+    })
+  ),
+  transports: [
+    new winston.transports.File({
+      filename: path.join(logDir, 'app.log')
+    }),
+    new winston.transports.Console()
+  ]
+});
+
+
 const express = require('express');
 const cheerio = require('cheerio');
 
@@ -151,3 +184,4 @@ app.get('/api/download', async (req, res) => {
 //app.listen(3000, () => console.log('Server running on port 3000'));
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
